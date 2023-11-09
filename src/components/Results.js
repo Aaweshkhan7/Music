@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
-import Items from '../Items';
+import Items from './Items';
 
 function Results(props) { // query
 
@@ -8,6 +8,10 @@ function Results(props) { // query
 
     // Search for the song once the component renders
     useEffect(() => {
+        if (!props.query) {
+            navigate("/search")
+            return
+        }
         search(props.query)
         document.title = `'${props.query}' - TuneStation`
     }, [])
@@ -66,21 +70,21 @@ function Results(props) { // query
 
     return (
         <>
-            <section className="text-black dark:text-gray-400 bg-light-100 dark:bg-deep-900 body-font">
-                <div className="container px-5 py-8 mx-auto" id="blurred_results">
+            <section className="body-font h-screen mt-2">
+                <div className="container px-0 py-2 mx-auto" id="blurred_results">
                     <div className="flex flex-col text-center w-full mb-10">
-                        <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-black dark:text-white">Search Results: &#10075;<span
+                        <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4">Search Results: &#10075;<span
                             id="search_query" className="capitalize">{props.query}</span>&#10076;</h1>
                     </div>
 
-                    <div className="flex flex-wrap -m-2" id="results">
+                    <div className="flex flex-wrap pb-[8rem]  md:pb-2" id="results">
                         {results.map((song) => {
                             return <Items key={song.id} song={song} onClick={
                                 async () => {
                                     if (song.type.toUpperCase() == "SONG") {
                                         let details = await getSongDetails(song.id)
                                         props.setDetails(details)
-                                        navigate("/listen")
+                                        // navigate("/listen")
                                     }
                                     else if (song.type.toUpperCase() == "ALBUM") {
                                         props.setAlbumId(song.id)
